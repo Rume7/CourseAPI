@@ -1,45 +1,36 @@
-package com.codehacks.topic;
+package com.codehacks.courses;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TopicService {
+public class CourseService {
     
-    List<Topic> topics = new ArrayList<>(Arrays.asList(
-            new Topic("Spring", "Spring Framework", "Spring Framework Description"),
-            new Topic("Vaadin", "Vaadin Framework", "Java frontend Framework"),
-            new Topic("JSF", "JavaServer Faces", "JSF Description")
-        ));
+    @Autowired
+    private CourseRepository topicRepository;
     
-    public List<Topic> getAllTopics(){
-        return topics;
+    public List<Course> getAllTopics() {
+        List<Course> allTopics = new ArrayList<>();
+        topicRepository.findAll()
+                .forEach(allTopics::add);
+        return allTopics;
     }
     
-    public Topic getTopic(String id) {
-        return topics.stream()
-                .filter(t -> t.getId().equals(id))
-                .findFirst().get();
+    public Course getTopic(String id) {
+        return topicRepository.findById(id).orElseThrow();
     }
     
-    public void addTopic(Topic topic) {
-        topics.add(topic);
+    public void addTopic(Course topic) {
+        topicRepository.save(topic);
     }
     
-    public void updateTopic(String id, Topic topic) {
-        for (int i = 0; i < topics.size(); i++) {
-            Topic t = topics.get(i);
-            if (t.getId().equals(id)) {
-                topics.set(i, topic);
-                return ;
-            }
-            
-        }
+    public void updateTopic(String id, Course topic) {
+        topicRepository.save(topic);
     }
     
     public void deleteTopic(String id) {
-        topics.removeIf(t -> t.getId().equals(id));
+        topicRepository.deleteById(id);
     }
 }
